@@ -358,7 +358,6 @@
     initStickyStepsBasic(document);
     initTestimonialSwiper(document);
     initVimeoLightboxAdvanced(document);
-    initTestimonialCursor(document);
     setupRegistrationForm(document);
     injectZone01FormStyles();
   }
@@ -379,7 +378,6 @@
     initStickyStepsBasic(nextPage);
     initTestimonialSwiper(nextPage);
     initVimeoLightboxAdvanced(nextPage);
-    initTestimonialCursor(nextPage);
     setupRegistrationForm(nextPage);
 
     if (window.initLegacyPixelSectionTransitions) {
@@ -1154,6 +1152,8 @@
       _tcCursorEl.style.display = "none";
       _tcCursorEl.style.opacity = "0";
     }
+
+    document.getElementById("tc-cursor-styles")?.remove();
   }
 
   function initTestimonialCursor(scope = document) {
