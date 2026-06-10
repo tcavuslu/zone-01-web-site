@@ -355,7 +355,7 @@
     initHeroHeadingTyping(document);
     initVimeoBGVideo(document);
     initStickyFeatures(document);
-    initStickyStepsBasic();
+    initStickyStepsBasic(document);
     initTestimonialSwiper(document);
     initVimeoLightboxAdvanced(document);
     initTestimonialCursor(document);
@@ -376,7 +376,7 @@
     initHeroHeadingTyping(nextPage);
     initVimeoBGVideo(nextPage);
     initStickyFeatures(nextPage);
-    initStickyStepsBasic();
+    initStickyStepsBasic(nextPage);
     initTestimonialSwiper(nextPage);
     initVimeoLightboxAdvanced(nextPage);
     initTestimonialCursor(nextPage);
@@ -1000,8 +1000,14 @@
   let stickyStepsRaf = null;
   let stickyStepsListenersBound = false;
 
-  function updateStickyStepsBasic() {
-    const containers = document.querySelectorAll("[data-sticky-steps-init]");
+  function updateStickyStepsBasic(root = document) {
+    const scope = root || document;
+    const containers = Array.from(scope.querySelectorAll("[data-sticky-steps-init]"));
+
+    if (scope.matches && scope.matches("[data-sticky-steps-init]")) {
+      containers.unshift(scope);
+    }
+
     if (!containers.length) return;
 
     containers.forEach(container => {
@@ -1045,15 +1051,22 @@
     });
   }
 
-  function initStickyStepsBasic() {
+  function initStickyStepsBasic(root = document) {
     if (!stickyStepsListenersBound) {
       window.addEventListener("scroll", requestStickyStepsUpdate, { passive: true });
       window.addEventListener("resize", requestStickyStepsUpdate);
+      document.addEventListener("scroll", requestStickyStepsUpdate, { passive: true, capture: true });
+      document.addEventListener("wheel", requestStickyStepsUpdate, { passive: true });
+      document.addEventListener("touchmove", requestStickyStepsUpdate, { passive: true });
       stickyStepsListenersBound = true;
     }
 
+    updateStickyStepsBasic(root);
     requestStickyStepsUpdate();
   }
+
+  window.initStickyStepsBasic = initStickyStepsBasic;
+  window.updateStickyStepsBasic = updateStickyStepsBasic;
 
   function ensureNavbarVisible() {
     const nav = document.querySelector(".navbar2_component");
