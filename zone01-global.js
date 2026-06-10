@@ -355,6 +355,7 @@
     initHeroHeadingTyping(document);
     initVimeoBGVideo(document);
     initStickyFeatures(document);
+    initStickyStepsBasic();
     initTestimonialSwiper(document);
     initVimeoLightboxAdvanced(document);
     initTestimonialCursor(document);
@@ -375,6 +376,7 @@
     initHeroHeadingTyping(nextPage);
     initVimeoBGVideo(nextPage);
     initStickyFeatures(nextPage);
+    initStickyStepsBasic();
     initTestimonialSwiper(nextPage);
     initVimeoLightboxAdvanced(nextPage);
     initTestimonialCursor(nextPage);
@@ -993,6 +995,64 @@
     });
 
     ScrollTrigger.refresh();
+  }
+
+  let stickyStepsRaf = null;
+  let stickyStepsListenersBound = false;
+
+  function updateStickyStepsBasic() {
+    const containers = document.querySelectorAll("[data-sticky-steps-init]");
+    if (!containers.length) return;
+
+    containers.forEach(container => {
+      const items = Array.from(container.querySelectorAll("[data-sticky-steps-item]"));
+      if (!items.length) return;
+
+      const viewportCenter = window.innerHeight / 2;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      items.forEach((item, index) => {
+        const anchor = item.querySelector("[data-sticky-steps-anchor]");
+        if (!anchor) return;
+
+        const rect = anchor.getBoundingClientRect();
+        const anchorCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(viewportCenter - anchorCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      items.forEach((item, index) => {
+        let status = "active";
+        if (index < closestIndex) status = "before";
+        if (index > closestIndex) status = "after";
+
+        item.setAttribute("data-sticky-steps-item-status", status);
+      });
+    });
+  }
+
+  function requestStickyStepsUpdate() {
+    if (stickyStepsRaf) return;
+
+    stickyStepsRaf = requestAnimationFrame(() => {
+      stickyStepsRaf = null;
+      updateStickyStepsBasic();
+    });
+  }
+
+  function initStickyStepsBasic() {
+    if (!stickyStepsListenersBound) {
+      window.addEventListener("scroll", requestStickyStepsUpdate, { passive: true });
+      window.addEventListener("resize", requestStickyStepsUpdate);
+      stickyStepsListenersBound = true;
+    }
+
+    requestStickyStepsUpdate();
   }
 
   function ensureNavbarVisible() {
