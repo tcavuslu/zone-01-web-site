@@ -1327,7 +1327,9 @@ function currentLinks() {
 
     const wrap = $(".page-wrapper");
     if (wrap && container.parentNode === document.body) {
-     const footer = wrap.querySelector(".footer-wrapper");
+      const footer = Array.from(wrap.children).find(el =>
+        el.matches("footer.section.is-footer, .section.is-footer")
+      );
       if (footer) wrap.insertBefore(container, footer);
       else wrap.appendChild(container);
     }
@@ -1433,7 +1435,6 @@ function currentLinks() {
     const tw = $("[data-transition-wrap]");
     if (tw?.parentNode === document.body) tw.insertAdjacentElement("afterend", data.next.container);
     else document.body.appendChild(data.next.container);
-    data.next.container.querySelectorAll(".footer-wrapper").forEach(el => el.remove());
 
     gsap.set(data.next.container, {
       position: "fixed",
