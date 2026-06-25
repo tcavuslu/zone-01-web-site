@@ -1491,8 +1491,7 @@ function currentLinks() {
     }]
   });
 })();
-</script>
-<script>
+
 (() => {
   let stickyStepsRaf = null;
   let stickyStepsListenersBound = false;
